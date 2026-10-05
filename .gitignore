@@ -11,3 +11,8 @@ obj/
 *.zip
 .DS_Store
 Thumbs.db
+node_modules/
+.next/
+dist/
+build/
+*.log
