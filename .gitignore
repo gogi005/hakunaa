@@ -1,13 +1,5 @@
-node_modules/
+(empty)node_modules/
 .next/
 dist/
 build/
 *.log
-# Godot / .NET
-.mono/
-.godot/
-bin/
-obj/
-*.csproj.old
-.idea/
-.vs/

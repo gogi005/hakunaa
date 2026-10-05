@@ -107,6 +107,10 @@ namespace AimTrainer
         /// </summary>
         public void Shoot()
         {
+            // A click while the cursor is released only re-captures it (handled in input).
+            AimTrainerManager manager = AimTrainerManager.Instance;
+            if (manager == null || !manager.RoundActive) return;
+
             PlayShootSound();
             SpawnTracer();
 
@@ -122,9 +126,6 @@ namespace AimTrainer
             PhysicsDirectSpaceState3D space =
                 GetViewport().World3D.DirectSpaceState; // Godot 4.x API
             Dictionary hit = space.IntersectRayQuery(query);
-
-            AimTrainerManager manager = AimTrainerManager.Instance;
-            if (manager == null) return;
 
             if (hit.Count > 0 &&
                 hit["collider"].As<GodotObject>() is Target target)

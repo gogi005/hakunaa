@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/PlayerController.cs" id="1_player"]
 [ext_resource type="Script" path="res://scripts/AimTrainerManager.cs" id="2_manager"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/TargetSpawner.cs" id="4_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/Target.tscn" id="5_target"]
 [ext_resource type="Environment" path="res://materials/RoomTheme.tres" id="6_env"]
+[ext_resource type="AudioStream" path="res://audio/shoot_placeholder.wav" id="7_shootwav"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
 size = Vector2(30, 30)
@@ -127,6 +128,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
 fov = 90.0
 
 [node name="ShootAudio" type="AudioStreamPlayer" parent="Player/YawNode/CameraPivot"]
+stream = ExtResource("7_shootwav")
 
 [node name="PlayerController" type="Node" parent="Player"]
 script = ExtResource("1_player")
