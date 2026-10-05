@@ -1,0 +1,202 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://scripts/PlayerController.cs" id="1_player"]
+[ext_resource type="Script" path="res://scripts/AimTrainerManager.cs" id="2_manager"]
+[ext_resource type="Script" path="res://scripts/HUD.cs" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/TargetSpawner.cs" id="4_spawner"]
+[ext_resource type="PackedScene" path="res://scenes/Target.tscn" id="5_target"]
+[ext_resource type="Environment" path="res://materials/RoomTheme.tres" id="6_env"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(30, 30)
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor"]
+albedo_color = Color(0.28, 0.3, 0.33, 1)
+roughness = 0.9
+
+[sub_resource type="BoxShape3D" id="BoxShape_floor"]
+extents = Vector2(15, 0.25, 15)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wall"]
+size = Vector3(30, 6, 0.4)
+
+[sub_resource type="StandardMaterial3D" id="Mat_wall"]
+albedo_color = Color(0.4, 0.43, 0.47, 1)
+roughness = 0.8
+
+[sub_resource type="BoxShape3D" id="BoxShape_wallX"]
+extents = Vector2(15, 3, 0.2)
+
+[sub_resource type="CapsuleShape3D" id="Capsule_player"]
+radius = 0.4
+height = 1.8
+
+[node name="Main" type="Node"]
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Environment" type="WorldEnvironment" parent="World"]
+environment = ExtResource("6_env")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World"]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 8, 12, 8)
+light_energy = 0.8
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody3D" parent="World"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="FloorMesh" type="MeshInstance3D" parent="World/Floor"]
+mesh = SubResource("PlaneMesh_floor")
+surface_material_override/0 = SubResource("Mat_floor")
+
+[node name="FloorCollision" type="CollisionShape3D" parent="World/Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+shape = SubResource("BoxShape_floor")
+
+[node name="NorthWall" type="StaticBody3D" parent="World"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="NorthWallMesh" type="MeshInstance3D" parent="World/NorthWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -15)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Mat_wall")
+
+[node name="NorthWallCollision" type="CollisionShape3D" parent="World/NorthWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -15)
+shape = SubResource("BoxShape_wallX")
+
+[node name="SouthWall" type="StaticBody3D" parent="World"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="SouthWallMesh" type="MeshInstance3D" parent="World/SouthWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 15)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Mat_wall")
+
+[node name="SouthWallCollision" type="CollisionShape3D" parent="World/SouthWall"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 15)
+shape = SubResource("BoxShape_wallX")
+
+[node name="WestWall" type="StaticBody3D" parent="World"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="WestWallMesh" type="MeshInstance3D" parent="World/WestWall"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -15, 3, 0)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Mat_wall")
+
+[node name="WestWallCollision" type="CollisionShape3D" parent="World/WestWall"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -15, 3, 0)
+shape = SubResource("BoxShape_wallX")
+
+[node name="EastWall" type="StaticBody3D" parent="World"]
+collision_layer = 1
+collision_mask = 0
+
+[node name="EastWallMesh" type="MeshInstance3D" parent="World/EastWall"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 15, 3, 0)
+mesh = SubResource("BoxMesh_wall")
+surface_material_override/0 = SubResource("Mat_wall")
+
+[node name="EastWallCollision" type="CollisionShape3D" parent="World/EastWall"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 15, 3, 0)
+shape = SubResource("BoxShape_wallX")
+
+[node name="TargetSpawner" type="Node3D" parent="World"]
+script = ExtResource("4_spawner")
+TargetScene = ExtResource("5_target")
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 8)
+
+[node name="Collision" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("Capsule_player")
+
+[node name="YawNode" type="Node3D" parent="Player"]
+
+[node name="CameraPivot" type="Node3D" parent="Player/YawNode"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Player/YawNode/CameraPivot"]
+fov = 90.0
+
+[node name="ShootAudio" type="AudioStreamPlayer" parent="Player/YawNode/CameraPivot"]
+
+[node name="PlayerController" type="Node" parent="Player"]
+script = ExtResource("1_player")
+
+[node name="HUD" type="CanvasLayer" parent="Player"]
+script = ExtResource("3_hud")
+
+[node name="StatsBox" type="VBoxContainer" parent="Player/HUD"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 220.0
+offset_bottom = 120.0
+
+[node name="ScoreLabel" type="Label" parent="Player/HUD/StatsBox"]
+text = "Score: 0"
+
+[node name="HitsLabel" type="Label" parent="Player/HUD/StatsBox"]
+text = "Hits: 0"
+
+[node name="MissesLabel" type="Label" parent="Player/HUD/StatsBox"]
+text = "Misses: 0"
+
+[node name="AccuracyLabel" type="Label" parent="Player/HUD/StatsBox"]
+text = "Accuracy: 100%"
+
+[node name="TimerBox" type="CenterContainer" parent="Player/HUD"]
+anchor_right = 1.0
+offset_top = 12.0
+offset_bottom = 60.0
+
+[node name="TimeLabel" type="Label" parent="Player/HUD/TimerBox"]
+text = "Time: 60"
+
+[node name="Crosshair" type="Control" parent="Player/HUD"]
+mouse_filter = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ResultsPanel" type="PanelContainer" parent="Player/HUD"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -140.0
+offset_right = 180.0
+offset_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Player/HUD/ResultsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ResultsLabel" type="Label" parent="Player/HUD/ResultsPanel/VBox"]
+layout_mode = 2
+horizontal_alignment = 1
+text = "ROUND COMPLETE
+
+Score: 0
+Hits: 0
+Misses: 0
+Accuracy: 100%
+Hits/Minute: 0"
+
+[node name="PlayAgainButton" type="Button" parent="Player/HUD/ResultsPanel/VBox"]
+layout_mode = 2
+text = "Play Again"
+
+[node name="AimTrainerManager" type="Node" parent="."]
+script = ExtResource("2_manager")
