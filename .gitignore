@@ -1,17 +1,5 @@
-# Godot 4+ specific ignores
-.godot/
-*.translation
-mono_crash.*.json
-
-# Build output
-bin/
-obj/
-
-# Archives / OS junk (project source files are NOT ignored)
-*.zip
-.DS_Store
-Thumbs.db
-node_modules/
+# Common compressed files
+*.zipnode_modules/
 .next/
 dist/
 build/
